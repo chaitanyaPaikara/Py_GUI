@@ -1,0 +1,35 @@
+import Robot_Class 
+import random
+myrobot = Robot_Class.robot()
+myrobot = myrobot.move(0.1, 5.0)
+Z = myrobot.sense()
+
+N = 1000
+p = []
+for i in range(N):
+    x = Robot_Class.robot()
+    x.set_noise(0.05, 0.05, 5.0)
+    p.append(x)
+
+p2 = []
+for i in range(N):
+    p2.append(p[i].move(0.1, 5.0))
+p = p2
+
+w = []
+for i in range(N):
+    w.append(p[i].measurement_prob(Z))
+
+p3 = []
+beta = 0
+w_max = max(w)
+index = int(random.random()*N)
+for i in range(N):
+    beta = beta + (2*w_max*random.random())
+    while w[index] < beta:
+        beta = beta - w[index]
+        index = (index + 1)%N
+    p3.append(p[index])
+    
+p = p3
+print p
