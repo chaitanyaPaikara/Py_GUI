@@ -31,6 +31,7 @@ grid = [[0, 0, 0, 0, 0, 0],
 init = [0, 0]
 goal = [len(grid)-1, len(grid[0])-1]
 unit_cost = 1
+cost = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
 check = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
 expand = [[-1 for row in range(len(grid[0]))] for col in range(len(grid))]
 action = [[' ' for col in range(len(grid[0]))] for row in range(len(grid))]
@@ -50,20 +51,22 @@ def search(grid,init,goal,unit_cost):
     path.append(init)
     check[path[0][0]][path[0][1]] = 1
     while path:
-        # print path, "\t"+str(time)    
+        print path, "\t"+str(time)    
         for j in delta:
             new = [path[0][0] + j[0],path[0][1] + j[1],path[0][2]]
             if new[0] >= 0 and new[1] >= 0 and new[0] < 5 and new[1] < 6:
                 if check[new[0]][new[1]] is 0 and grid[new[0]][new[1]] is 0:
                     if new[0] == goal[0] and new[1] == goal[1]:
                         new[2]+=unit_cost
+                        cost[new[0]][new[1]] = new[2]
                         expand[new[0]][new[1]] = time
                         return new
                     else:
                         new[2]+=unit_cost
+                        cost[new[0]][new[1]] = new[2]
                         path.append(new)
                         #action[new[0]][new[1]] = j[2]
-                        action[path[0][0]][path[0][1]] = j[2]
+                        #action[path[0][0]][path[0][1]] = j[2]
                         check[new[0]][new[1]] = 1
                 elif grid[new[0]][new[1]] is 1:
                     expand[new[0]][new[1]] = -1
@@ -71,21 +74,30 @@ def search(grid,init,goal,unit_cost):
         expand[path[0][0]][path[0][1]] = time
         time+=unit_cost
 
-'''
-def traversal(action):
-    current = init
-    while current is not goal:
-        for j in delta:
-            new = [current[0] + j[0],current[1] + j[1]]
-            if new[0] >= 0 and new[1] >= 0 and new[0] < 5 and new[1] < 6:
-                if action[new[0]][new[1]] is not ' ':
-                    
-'''
 
+def traversal(unit_cost,cost,init,delta):
+    Flag = True
+    pos = init
+    track = 0
+    while Flag:
+        track+=unit_cost
+        for j in range(len(delta)):
+            new = [pos[0] + delta[j][0],pos[1] + delta[j][1]]
+            if new[0] >= 0 and new[1] >= 0 and new[0] < 5 and new[1] < 6:
+                if cost[new[0]][new[1]] is track:
+                    action[pos[0]][pos[1]] = delta[j][2]
+                    postion = new
+        pos = postion
+        if pos[0] == goal[0] and pos[1] == goal[1]:
+            Flag = False
+            action[pos[0]][pos[1]] = 'g'
 print search(grid,init,goal,unit_cost)
-'''
+print
+for z in cost:
+    print z
+
+traversal(unit_cost,cost,init,delta)
 for z in action:
     print z
-for z in expand:
-    print z
-'''
+#for z in expand:
+#    print z
