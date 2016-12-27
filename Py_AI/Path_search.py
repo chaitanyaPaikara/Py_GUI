@@ -1,4 +1,4 @@
-# ----------
+    # ----------
 # User Instructions:
 # 
 # Define a function, search() that returns a list
@@ -42,20 +42,21 @@ def search(grid,init,goal,unit_cost):
     # ----------------------------------------
     path = []
     cost = 0
+    init.append(0)
     path.append(init)
     check[path[0][0]][path[0][1]] = 1
     while path:
-        print path
         for j in delta:
-            new = [path[0][0] + j[0],path[0][1] + j[1]]
+            new = [path[0][0] + j[0],path[0][1] + j[1],path[0][2]]
             if new[0] >= 0 and new[1] >= 0 and new[0] < 5 and new[1] < 6:
                 if check[new[0]][new[1]] is 0 and grid[new[0]][new[1]] is 0:
                     if new[0] == goal[0] and new[1] == goal[1]:
-                        return cost
+                        new[2]+=unit_cost
+                        return new
                     else:
+                        new[2]+=unit_cost
                         path.append(new)
                         check[new[0]][new[1]] = 1
-        del path[0]            
-        cost+=unit_cost    
+        del path[0]          
 
 print search(grid,init,goal,unit_cost)
