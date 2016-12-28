@@ -15,19 +15,20 @@
 #   0 = Navigable space
 #   1 = Occupied space
 
-
+'''
 grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 1, 0],
         [0, 0, 1, 0, 1, 0],
         [0, 0, 0, 0, 1, 0]]
 '''
-grid = [[0, 0, 0, 0, 0, 0],
-        [0, 1, 1, 1, 1, 0],
-        [0, 1, 0, 0, 0, 0],
-        [0, 1, 0, 0, 0, 0],
-        [0, 1, 0, 0, 1, 0]]
-'''
+grid = [[0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 1, 0],
+        [0, 0, 1, 1, 1, 0],
+        [0, 0, 0, 0, 1, 0]]
+
 init = [0, 0]
 goal = [len(grid)-1, len(grid[0])-1]
 unit_cost = 1
@@ -54,7 +55,7 @@ def search(grid,init,goal,unit_cost):
         print path, "\t"+str(time)    
         for j in delta:
             new = [path[0][0] + j[0],path[0][1] + j[1],path[0][2]]
-            if new[0] >= 0 and new[1] >= 0 and new[0] < 5 and new[1] < 6:
+            if new[0] >= 0 and new[1] >= 0 and new[0] < 6 and new[1] < 6:
                 if check[new[0]][new[1]] is 0 and grid[new[0]][new[1]] is 0:
                     if new[0] == goal[0] and new[1] == goal[1]:
                         new[2]+=unit_cost
@@ -83,7 +84,7 @@ def traversal(unit_cost,cost,init,delta):
         track+=unit_cost
         for j in range(len(delta)):
             new = [pos[0] + delta[j][0],pos[1] + delta[j][1]]
-            if new[0] >= 0 and new[1] >= 0 and new[0] < 5 and new[1] < 6:
+            if new[0] >= 0 and new[1] >= 0 and new[0] < 6 and new[1] < 6:
                 if cost[new[0]][new[1]] is track:
                     action[pos[0]][pos[1]] = delta[j][2]
                     postion = new
