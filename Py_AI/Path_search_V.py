@@ -80,6 +80,8 @@ def traversal(unit_cost,cost,init,delta):
     Flag = True
     pos = init
     track = 0
+    index = 0
+    possbility = []
     while Flag:
         track+=unit_cost
         for j in range(len(delta)):
@@ -88,6 +90,10 @@ def traversal(unit_cost,cost,init,delta):
                 if cost[new[0]][new[1]] is track:
                     action[pos[0]][pos[1]] = delta[j][2]
                     postion = new
+                    index+=1
+                    if index > 1:
+                        last_pos = pos
+                        possbility.append(delta[j])
         pos = postion
         if pos[0] == goal[0] and pos[1] == goal[1]:
             Flag = False
