@@ -36,21 +36,25 @@ def main():
 	print p
 
 #################################################################
-#          P - Controller
-def run(param1,param2):
-    myrobot = Robot_Class.robot()
+#          PID - Controller
+
+def run(param1, param2, param3):
+    myrobot = robot()
     myrobot.set(0.0, 1.0, 0.0)
     speed = 1.0 # motion distance is equal to speed (we assume time = 1)
     N = 100
+    myrobot.set_steering_drift(10.0 / 180.0 * pi) # 10 degree bias, this will be added in by the move function, you do not need to add it below!
     error = myrobot.y
     prev_error = myrobot.y
+    error_sum = 0
     for i in range(N):
     	error = myrobot.y
-    	#error_diff = error - prev_error
-        steering = -param1*error #- param2*error_diff 
+    	error_sum+=error
+    	error_diff = error - prev_error
+        steering = -param1*error - param2*error_diff - param3*error_sum
         myrobot = myrobot.move(steering,1)
         print myrobot, i
-        #prev_error = error
-        
-run(0.1,3.0) # call function with parameter tau of 0.1 and print results
+        prev_error = error
 
+# Call your function with parameters of (0.2, 3.0, and 0.004)
+run(0.2, 3.0, 0.004)

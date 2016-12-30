@@ -1,20 +1,16 @@
-# -----------
+# ----------------
 # User Instructions
 #
-# Implement a P controller by running 100 iterations
-# of robot motion. The steering angle should be set
-# by the parameter tau so that:
+# Implement twiddle as shown in the previous two videos.
+# Your accumulated error should be very small!
 #
-# steering = -tau_p * CTE - tau_d * diff_CTE - tau_i * int_CTE
+# Your twiddle function should RETURN the accumulated
+# error. Try adjusting the parameters p and dp to make
+# this error as small as possible.
 #
-# where the integrated crosstrack error (int_CTE) is
-# the sum of all the previous crosstrack errors.
-# This term works to cancel out steering drift.
-#
-# Your code should print a list that looks just like
-# the list shown in the video.
-#
-# Only modify code at the bottom!
+# Try to get your error below 1.0e-10 with as few iterations
+# as possible (too many iterations will cause a timeout).
+# No cheating!
 # ------------
  
 from math import *
@@ -44,7 +40,7 @@ class robot:
 
     # --------
     # set: 
-    #	sets a robot coordinate
+    #   sets a robot coordinate
     #
 
     def set(self, new_x, new_y, new_orientation):
@@ -56,7 +52,7 @@ class robot:
 
     # --------
     # set_noise: 
-    #	sets the noise parameters
+    #   sets the noise parameters
     #
 
     def set_noise(self, new_s_noise, new_d_noise):
@@ -67,7 +63,7 @@ class robot:
 
     # --------
     # set_steering_drift: 
-    #	sets the systematical steering drift parameter
+    #   sets the systematical steering drift parameter
     #
 
     def set_steering_drift(self, drift):
@@ -134,36 +130,67 @@ class robot:
         return '[x=%.5f y=%.5f orient=%.5f]'  % (self.x, self.y, self.orientation)
 
 
-
-
-############## ADD / MODIFY CODE BELOW ####################
-
 # ------------------------------------------------------------------------
 #
 # run - does a single control run.
 
 
-def run(param1, param2, param3):
+def run(params, printflag = False):
     myrobot = robot()
     myrobot.set(0.0, 1.0, 0.0)
-    speed = 1.0 # motion distance is equal to speed (we assume time = 1)
+    speed = 1.0
+    err = 0.0
+    int_crosstrack_error = 0.0
     N = 100
-    myrobot.set_steering_drift(10.0 / 180.0 * pi) # 10 degree bias, this will be added in by the move function, you do not need to add it below!
-    error = myrobot.y
-    prev_error = myrobot.y
-    error_sum = 0
-    for i in range(N):
-    	error = myrobot.y
-    	error_sum+=error
-    	error_diff = error - prev_error
-        steering = -param1*error - param2*error_diff - param3*error_sum
-        myrobot = myrobot.move(steering,1)
-        print myrobot, i
-        prev_error = error
-
-# Call your function with parameters of (0.2, 3.0, and 0.004)
-run(0.2, 3.0, 0.004)
+    # myrobot.set_noise(0.1, 0.0)
+    myrobot.set_steering_drift(10.0 / 180.0 * pi) # 10 degree steering error
 
 
+    crosstrack_error = myrobot.y
 
+
+    for i in range(N * 2):
+
+        diff_crosstrack_error = myrobot.y - crosstrack_error
+        crosstrack_error = myrobot.y
+        int_crosstrack_error += crosstrack_error
+
+        steer = - params[0] * crosstrack_error  \
+            - params[1] * diff_crosstrack_error \
+            - int_crosstrack_error * params[2]
+        myrobot = myrobot.move(steer, speed)
+        if i >= N:
+            err += (crosstrack_error ** 2)
+        if printflag:
+            print myrobot, steer
+    return err / float(N)
+
+
+def twiddle(tol = 0.2): #Make this tolerance bigger if you are timing out!
+############## ADD CODE BELOW ####################
+    params = [0,0,0]
+    dp = [1,1,1]
+    best_err = run(params)
+    err = run(params)
+    while sum(dp) > tol:
+        for i in range(len(params)):
+            params[i]+=dp[i]
+            err = run(params)
+            if err < best_err:
+                best_err = err
+                dp[i]*=1.1
+            else:
+                params[i]-=2*dp[i]
+                err = run(params)
+                if err < best_err:
+                    best_err = err
+                    dp[i]*=1.1
+                else:
+                    params[i]+=dp[i]
+                    dp[i]*=0.9
+            #print best_err, err, params, dp
+            
+    return run(params), params
+
+print twiddle()
 
