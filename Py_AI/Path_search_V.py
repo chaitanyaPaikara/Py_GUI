@@ -20,7 +20,7 @@ grid = [[0, 1, 0, 0, 0, 0],
         [0, 1, 0, 1, 1, 0],
         [0, 1, 0, 1, 0, 0],
         [0, 0, 0, 1, 0, 1],
-        [0, 1, 1, 1, 0, 0]]
+        [0, 1, 0, 1, 0, 0]]
 '''
 grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 0, 0],
@@ -81,20 +81,39 @@ def traversal(unit_cost,cost,init,delta):
     pos = init
     track = 0
     index = 0
-    possbility = []
+    possibility = []
+    last_pos = []
     while Flag:
-        track+=unit_cost
-        for j in range(len(delta)):
-            new = [pos[0] + delta[j][0],pos[1] + delta[j][1]]
-            if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
-                if cost[new[0]][new[1]] is track:
-                    action[pos[0]][pos[1]] = delta[j][2]
-                    postion = new
-                    index+=1
-                    if index > 1:
-                        last_pos = pos
-                        possbility.append(delta[j])
-        pos = postion
+        if pos is not last_pos:
+            track+=unit_cost
+            for j in range(len(delta)):
+                new = [pos[0] + delta[j][0],pos[1] + delta[j][1]]
+                if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
+                    if cost[new[0]][new[1]] is track:
+                        action[pos[0]][pos[1]] = delta[j][2]
+                        postion = new
+                        index+=1
+                        if index > 1:
+                            last_pos = pos
+                            possibility.append(delta[j])
+        else:
+            for j in range(len(possibility)):
+                if possibility[j][2] is last_action:
+                    del possibility[j]
+                else:
+                    new = [pos[0] + possibility[j][0],pos[1] + possibility[j][1]]
+                    if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
+                        if cost[new[0]][new[1]] is track:
+                            action[pos[0]][pos[1]] = possibility[j][2]
+                            index+=1
+                            if index > 1:
+                                last_pos = pos
+        if index == 0:
+            pos = last_pos
+        else:
+            last_action = action[pos[0]][pos[1]]
+            pos = postion
+        index = 0
         if pos[0] == goal[0] and pos[1] == goal[1]:
             Flag = False
             action[pos[0]][pos[1]] = 'g'
