@@ -113,14 +113,15 @@ def traversal(unit_cost,cost,init,delta):
                 if thing.possibility[j][2] is last_action:
                     del thing.possibility[j]
                 else:
-                    new = [thin.last_pos[0] + thing.possibility[j][0],thing.last_pos[1] + thing.possibility[j][1]]
+                    new = [thing.last_pos[0] + thing.possibility[j][0],thing.last_pos[1] + thing.possibility[j][1]]
                     if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
                         if cost[new[0]][new[1]] is track:
-                            action[pos[0]][pos[1]] = possibility[j][2]
+                            action[thing.last_pos[0]][thing.last_pos[1]] = thing.possibility[j][2]
                             index+=1
                             if index > 1:
                                 last_pos = pos
         if index == 0:
+            track-=1
             pos = last_pos
         else:
             last_action = action[pos[0]][pos[1]]
