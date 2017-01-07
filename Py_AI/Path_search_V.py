@@ -45,6 +45,12 @@ delta = [[-1, 0,'^'], # go up
 
 delta_name = ['^', '<', 'v', '>']
 
+class stuff(object):
+    def __init__(self,last_pos,possibility,last_action):
+        self.possibility = possibility
+        self.last_pos = last_pos
+        self.last_action = last_action
+
 def search(grid,init,goal,unit_cost):
     path = []
     time = 0
@@ -83,6 +89,7 @@ def traversal(unit_cost,cost,init,delta):
     index = 0
     possibility = []
     last_pos = []
+    thing = stuff(last_pos,possibility,' ')
     while Flag:
         if pos is not last_pos:
             track+=unit_cost
@@ -93,15 +100,20 @@ def traversal(unit_cost,cost,init,delta):
                         action[pos[0]][pos[1]] = delta[j][2]
                         postion = new
                         index+=1
+                        possibility.append(delta[j])
                         if index > 1:
                             last_pos = pos
-                            possibility.append(delta[j])
+            if index > 1:
+                del thing
+                thing = stuff(last_pos,possibility,action[pos[0]][pos[1]])
+                possibility = []                
+
         else:
-            for j in range(len(possibility)):
-                if possibility[j][2] is last_action:
-                    del possibility[j]
+            for j in range(len(thing.possibility)):
+                if thing.possibility[j][2] is last_action:
+                    del thing.possibility[j]
                 else:
-                    new = [pos[0] + possibility[j][0],pos[1] + possibility[j][1]]
+                    new = [thin.last_pos[0] + thing.possibility[j][0],thing.last_pos[1] + thing.possibility[j][1]]
                     if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
                         if cost[new[0]][new[1]] is track:
                             action[pos[0]][pos[1]] = possibility[j][2]
