@@ -44,7 +44,7 @@ delta = [[-1, 0,'^'], # go up
          [ 0, 1,'>']] # go right
 
 delta_name = ['^', '<', 'v', '>']
-
+thing = []
 class stuff(object):
     def __init__(self,last_pos,possibility,last_action):
         self.possibility = possibility
@@ -89,14 +89,20 @@ def traversal(unit_cost,cost,init,delta):
     index = 0
     while Flag:
     	for i in range(2):
-	    	for j in delta:
-	    		new = [pos[0] + j[0],pos[1] + j[1]]
-	    		if i is 0:
-		    		if -1 < new[0] < len(grid) and -1 < new[1] < len(grid[0]):
-		    			if cost[new[0]][new[1]] is track:
-		    				index+=1
-		    	else:
-		    		
+	    	if i is 0:
+                for j in delta:
+    	    		new = [pos[0] + j[0],pos[1] + j[1]]
+    	    		if -1 < new[0] < len(grid) and -1 < new[1] < len(grid[0]):
+    		    		if cost[new[0]][new[1]] is track:
+    		    			index+=1
+                            possibility.append(j)
+		    else:
+		    	if index > 1:
+                    thing.append(stuff(pos,possibility,possibility[0][2]))
+                    last_pos = pos                        
+                action[pos[0]][pos[1]] = possibility[0][2]
+                pos = [pos[0] + possibility[0][0], pos[1] + possibility[0][1]]
+                possibility = []
 
     	
         if pos[0] == goal[0] and pos[1] == goal[1]:
