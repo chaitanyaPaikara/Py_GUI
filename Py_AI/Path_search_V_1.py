@@ -87,35 +87,41 @@ def traversal(unit_cost,cost,init,delta):
     pos = init
     track = 1
     index = 0
+    possibility = []
     while Flag:
-    	for i in range(2):
-	    	if i is 0:
-                for j in delta:
-    	    		new = [pos[0] + j[0],pos[1] + j[1]]
-    	    		if -1 < new[0] < len(grid) and -1 < new[1] < len(grid[0]):
-    		    		if cost[new[0]][new[1]] is track:
-    		    			index+=1
-                            possibility.append(j)
-		    else:
-		    	if index > 1:
-                    thing.append(stuff(pos,possibility,possibility[0][2]))
-                    last_pos = pos                        
-                action[pos[0]][pos[1]] = possibility[0][2]
-                pos = [pos[0] + possibility[0][0], pos[1] + possibility[0][1]]
-                possibility = []
-
-    	
+        for j in delta:
+            new = [pos[0] + j[0],pos[1] + j[1]]
+            if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
+                if cost[new[0]][new[1]] is track:
+                    index+=1
+                    possibility.append(j)    	
+    	if index is 0:
+            del thing[len(thing)-1].possibility[0]
+            pos = thing[len(thing)-1].last_pos
+            #print pos
+            #print thing[len(thing)-1].possibility
+            track = cost[pos[0]][pos[1]] + 2
+            #print track
+            pos = [pos[0] + thing[len(thing)-1].possibility[0][0], pos[1] + thing[len(thing)-1].possibility[0][1]]
+        else:
+            if index > 1:
+                thing.append(stuff(pos,possibility,possibility[0][2]))
+                last_pos = pos                        
+            action[pos[0]][pos[1]] = possibility[0][2]
+            pos = [pos[0] + possibility[0][0], pos[1] + possibility[0][1]]
+            possibility = []
+            track += 1
         if pos[0] == goal[0] and pos[1] == goal[1]:
             Flag = False
             action[pos[0]][pos[1]] = 'g'
+        index = 0
 print search(grid,init,goal,unit_cost)
 print
 for z in cost:
     print z
-'''
+
 traversal(unit_cost,cost,init,delta)
 for z in action:
     print z
 #for z in expand:
 #    print z
-'''
