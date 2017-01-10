@@ -15,13 +15,21 @@
 #   0 = Navigable space
 #   1 = Occupied space
 
+grid = [[0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 0, 0, 1],
+        [0, 1, 1, 0, 0, 0],
+        [0, 0, 1, 1, 1, 0],
+        [0, 0, 1, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0],
+        [1, 1, 0, 0, 0, 0]]
 
+'''
 grid = [[0, 1, 0, 0, 0, 0],
         [0, 1, 0, 1, 1, 0],
         [0, 1, 0, 1, 0, 0],
         [0, 0, 0, 1, 0, 1],
         [0, 1, 0, 1, 0, 0]]
-'''
+
 grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 0, 0],
         [0, 0, 1, 0, 0, 0],
@@ -29,8 +37,9 @@ grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 1, 1, 0],
         [0, 0, 0, 0, 1, 0]]
 '''
-init = [0, 0]
-goal = [len(grid)-1, len(grid[0])-1]
+init = [0, 1]
+goal = [5, 4]
+#goal = [len(grid)-1, len(grid[0])-1]
 unit_cost = 1
 cost = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
 check = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
@@ -72,8 +81,6 @@ def search(grid,init,goal,unit_cost):
                         new[2]+=unit_cost
                         cost[new[0]][new[1]] = new[2]
                         path.append(new)
-                        #action[new[0]][new[1]] = j[2]
-                        #action[path[0][0]][path[0][1]] = j[2]
                         check[new[0]][new[1]] = 1
                 elif grid[new[0]][new[1]] is 1:
                     expand[new[0]][new[1]] = -1
@@ -98,10 +105,7 @@ def traversal(unit_cost,cost,init,delta):
     	if index is 0:
             del thing[len(thing)-1].possibility[0]
             pos = thing[len(thing)-1].last_pos
-            #print pos
-            #print thing[len(thing)-1].possibility
             track = cost[pos[0]][pos[1]] + 2
-            #print track
             pos = [pos[0] + thing[len(thing)-1].possibility[0][0], pos[1] + thing[len(thing)-1].possibility[0][1]]
         else:
             if index > 1:
@@ -123,5 +127,4 @@ for z in cost:
 traversal(unit_cost,cost,init,delta)
 for z in action:
     print z
-#for z in expand:
-#    print z
+
