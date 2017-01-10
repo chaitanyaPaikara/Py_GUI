@@ -27,7 +27,7 @@ grid = [[0, 0, 0, 0, 1, 1],
 grid = [[0, 1, 0, 0, 0, 0],
         [0, 1, 0, 1, 1, 0],
         [0, 1, 0, 1, 0, 0],
-        [0, 0, 0, 1, 0, 1],
+        [0, 0, 0, 1, 0, 0],
         [0, 1, 0, 1, 0, 0]]
 
 grid = [[0, 0, 1, 0, 0, 0],
@@ -37,7 +37,7 @@ grid = [[0, 0, 1, 0, 0, 0],
         [0, 0, 1, 1, 1, 0],
         [0, 0, 0, 0, 1, 0]]
 '''
-init = [0, 1]
+init = [0, 1] #init = [0, 0] 
 goal = [5, 4]
 #goal = [len(grid)-1, len(grid[0])-1]
 unit_cost = 1
@@ -45,8 +45,7 @@ cost = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
 check = [[0 for row in range(len(grid[0]))] for col in range(len(grid))]
 expand = [[-1 for row in range(len(grid[0]))] for col in range(len(grid))]
 action = [[' ' for col in range(len(grid[0]))] for row in range(len(grid))]
-action[0][0] = 's' 
-action[len(grid)-1][len(grid[0])-1] = 'g' 
+action[init[0]][init[1]] = 's'  
 delta = [[-1, 0,'^'], # go up
          [ 0,-1,'<'], # go left
          [ 1, 0,'v'], # go down
@@ -55,12 +54,12 @@ delta = [[-1, 0,'^'], # go up
 delta_name = ['^', '<', 'v', '>']
 thing = []
 class stuff(object):
-    def __init__(self,last_pos,possibility,last_action):
+    def __init__(self,pos,possibility,last_pos):
         self.possibility = possibility
+        self.pos = pos
         self.last_pos = last_pos
-        self.last_action = last_action
     def print_parameters(self):
-    	print self.possibility, self.last_pos, self.last_pos
+    	print self.possibility, self.pos, self.last_pos
 
 def search(grid,init,goal,unit_cost):
     path = []
@@ -69,7 +68,7 @@ def search(grid,init,goal,unit_cost):
     path.append(init)
     check[path[0][0]][path[0][1]] = 1
     while path:
-        print path, "\t"+str(time)    
+        #print path, "\t"+str(time)    
         for j in delta:
             new = [path[0][0] + j[0],path[0][1] + j[1],path[0][2]]
             if new[0] >= 0 and new[1] >= 0 and new[0] < len(grid) and new[1] < len(grid[0]):
@@ -94,6 +93,7 @@ def search(grid,init,goal,unit_cost):
 def traversal(unit_cost,cost,init,delta):
     Flag = True
     pos = init
+    last_pos = init
     track = 1
     index = 0
     possibility = []
@@ -106,18 +106,24 @@ def traversal(unit_cost,cost,init,delta):
                     possibility.append(j)    	
     	if index is 0:
             del thing[len(thing)-1].possibility[0]
-            pos = thing[len(thing)-1].last_pos
+            print '*************'
+            pos = thing[len(thing)-1].pos
             print pos
+            last_pos = thing[len(thing)-1].last_pos
             track = cost[pos[0]][pos[1]] + 2
+            action[pos[0]][pos[1]] = thing[len(thing)-1].possibility[0][2]
             pos = [pos[0] + thing[len(thing)-1].possibility[0][0], pos[1] + thing[len(thing)-1].possibility[0][1]]
+            print pos
         else:
             if index > 1:
-                thing.append(stuff(pos,possibility,possibility[0][2]))
-                last_pos = pos                        
+                thing.append(stuff(pos,possibility,last_pos))
+                thing[len(thing)-1].print_parameters()                        
             action[pos[0]][pos[1]] = possibility[0][2]
+            last_pos = pos
             pos = [pos[0] + possibility[0][0], pos[1] + possibility[0][1]]
             possibility = []
             track += 1
+            print pos, last_pos
         if pos[0] == goal[0] and pos[1] == goal[1]:
             Flag = False
             action[pos[0]][pos[1]] = 'g'
