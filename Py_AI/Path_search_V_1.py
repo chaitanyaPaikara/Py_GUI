@@ -109,15 +109,22 @@ def traversal(unit_cost,cost,init,delta):
                     index+=1
                     possibility.append(j)    	
     	if index is 0:
-            del thing[len(thing)-1].possibility[0]
-            print '*************'
-            pos = thing[len(thing)-1].pos
-            print pos
-            last_pos = thing[len(thing)-1].last_pos
-            track = cost[pos[0]][pos[1]] + 2
-            action[pos[0]][pos[1]] = thing[len(thing)-1].possibility[0][2]
-            pos = [pos[0] + thing[len(thing)-1].possibility[0][0], pos[1] + thing[len(thing)-1].possibility[0][1]]
-            print pos
+    		print '***************'
+        	print thing[len(thing)-1].possibility
+        	del thing[len(thing)-1].possibility[0]
+        	pos = thing[len(thing)-1].pos
+        	print pos
+        	if not thing[len(thing)-1].possibility:
+        		pos = thing[len(thing)-1].last_pos
+        		print "Fuck YOU", pos
+        		del thing[len(thing)-1]
+        	else :
+        		last_pos = thing[len(thing)-1].last_pos
+        		track = cost[pos[0]][pos[1]] + 2
+        		action[pos[0]][pos[1]] = thing[len(thing)-1].possibility[0][2]
+        		pos = [pos[0] + thing[len(thing)-1].possibility[0][0], pos[1] + thing[len(thing)-1].possibility[0][1]]
+        		print pos
+
         else:
             if index > 1:
                 thing.append(stuff(pos,possibility,last_pos))
@@ -141,3 +148,10 @@ traversal(unit_cost,cost,init,delta)
 for z in action:
     print z
 
+'''
+if thing[len(thing)-1].possibility :
+else :
+	        	print '&&&&&&&&&&&&&'
+	        	pos =  thing[len(thing)-1].last_poss
+	        	track = cost[pos[0]][pos[1]] + 2
+'''	        	
