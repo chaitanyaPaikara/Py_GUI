@@ -73,9 +73,13 @@ def Mapping(delta):
 			#print "Found Goal"
 			flag = False
 	return
+
+print init[0], init[1], goal[0], goal[1]
 Mapping(delta)
-for z in grid:
-	print z
+for row in grid:
+	for col in row:
+		print col,
+	print '\r'
 '''
 print '************************************************'
 for z in X:
