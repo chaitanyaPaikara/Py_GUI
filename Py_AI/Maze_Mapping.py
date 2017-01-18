@@ -47,29 +47,28 @@ def Mapping(delta):
 	last_heading = delta[3]
 	flag = True
 	me = dynamics(init,last_heading,delta,delta_list)
-	for z in range(50):
+	for z in range(40):
 		heading_flag = True
 		X[me.pos[0]][me.pos[1]] += 1
 		limit = 2
-		for i,j in enumerate(me.delta_list):
-			if i is not 1:
-				new = [me.pos[0] + delta[j][0], me.pos[1] + delta[j][1]]
-				if new[0] >= 0 and new[1] >= 0 and new[0] < len(world) and new[1] < len(world[0]):
-					grid[new[0]][new[1]] = 1 if world[new[0]][new[1]] else 0
-					if world[new[0]][new[1]] is 0 and X[new[0]][new[1]] < 2:
-						if X[new[0]][new[1]] < limit:
-							limit = X[new[0]][new[1]]
-							me.heading = delta[j]
-							if last_heading is not me.heading:
-								me.Loop_shift(j+1) 
-							last_heading = me.heading
-						heading_flag = False
-						print new, me.pos, me.heading, me.delta_list
+		for j in me.delta_list:
+			new = [me.pos[0] + delta[j][0], me.pos[1] + delta[j][1]]
+			if new[0] >= 0 and new[1] >= 0 and new[0] < len(world) and new[1] < len(world[0]):
+				grid[new[0]][new[1]] = 1 if world[new[0]][new[1]] else 0
+				if world[new[0]][new[1]] is 0 and X[new[0]][new[1]] < 2:
+					if X[new[0]][new[1]] < limit:
+						limit = X[new[0]][new[1]]
+						me.heading = delta[j]
+						if last_heading is not me.heading:
+							me.Loop_shift(j+1)
+							print new, me.pos, me.heading, me.delta_list 
+						last_heading = me.heading
+					heading_flag = False
 		if heading_flag :
 			me.U_turn()
+			X[me.pos[0]][me.pos[1]] += 1
 			me.Loop_shift((me.delta).index(me.heading)+1)
 			print me.heading, me.delta_list 
-			#raise SystemExit
 		last_pos = me.pos
 		me.moveForward(1)
 		if me.pos is goal :
@@ -78,6 +77,9 @@ def Mapping(delta):
 	return
 Mapping(delta)
 for z in grid:
+	print z
+print '************************************************'
+for z in X:
 	print z
 
 
