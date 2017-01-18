@@ -9,6 +9,8 @@ world = [[1,1,1,0,1,1,1,1,1],
 		 [1,0,0,0,0,1,0,0,1],
 		 [1,1,1,1,0,1,1,1,1]]
 
+delta_list = [ 0, 1, 2, 3]
+
 class dynamics(object):
 	def __init__(self,pos,heading,delta,delta_list):
 		self.pos = pos
@@ -25,30 +27,32 @@ class dynamics(object):
 		cursor += 2
 		self.heading = self.delta[cursor % 4]
 	def Loop_shift(self,index):
-		if index is 4:
-			self.delta_list = [ 0, 1, 2, 3]
+		llist = [ 0, 1, 2, 3]
+		if index is 2:
+			self.delta_list = llist 
 		else:
+			if index is 4:
+				index = 2
 			for i in range(index):
-				temp = (self.delta_list).pop(0)
-				(self.delta_list).append(temp)
+				temp = llist.pop(-1)
+				llist.insert( 0, temp)
+			self.delta_list = llist	
 
 		
 init = [8, 4]
 goal = [0, 3] 
 delta = [[ 0,-1,'<'], # go left
-         [ 1, 0,'v'], # go down
+         [-1, 0,'^'], # go up
          [ 0, 1,'>'], # go right
-         [-1, 0,'^']] # go up
+         [ 1, 0,'v']] # go down
 grid = [[9 for row in range(len(world[0]))] for col in range(len(world))]
 X = [[0 for row in range(len(world[0]))] for col in range(len(world))]
 grid[init[0]][init[1]] = 0
-delta_list = [ 0, 1, 2, 3]
 def Mapping(delta):
-	last_heading = delta[3]
+	last_heading = [-1, 0,'^']
 	flag = True
 	me = dynamics(init,last_heading,delta,delta_list)
-	for z in range(40):
-		heading_flag = True
+	while flag :
 		X[me.pos[0]][me.pos[1]] += 1
 		limit = 2
 		for j in me.delta_list:
@@ -60,28 +64,23 @@ def Mapping(delta):
 						limit = X[new[0]][new[1]]
 						me.heading = delta[j]
 						if last_heading is not me.heading:
-							me.Loop_shift(j+1)
-							print new, me.pos, me.heading, me.delta_list 
+							me.Loop_shift(j+1) 
 						last_heading = me.heading
-					heading_flag = False
-		if heading_flag :
-			me.U_turn()
-			X[me.pos[0]][me.pos[1]] += 1
-			me.Loop_shift((me.delta).index(me.heading)+1)
-			print me.heading, me.delta_list 
+						#print new, me.pos, me.heading, me.delta_list, j
 		last_pos = me.pos
 		me.moveForward(1)
-		if me.pos is goal :
-			print "Found Goal"
+		if me.pos[0] is goal[0] and me.pos[1] is goal[1] :
+			#print "Found Goal"
 			flag = False
 	return
 Mapping(delta)
 for z in grid:
 	print z
+'''
 print '************************************************'
 for z in X:
 	print z
-
+'''
 
 
 
