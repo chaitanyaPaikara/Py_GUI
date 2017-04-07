@@ -28,7 +28,7 @@ def Click():
 btn = Button(window,text="Accept",fg="#11dbcd", bg="#383a39",command=Click)
 global ent, w_metal, w_organic, w_plastic, theLabel, last
 img = PhotoImage(file="Best.gif",width=640,height=175)
-theLabel = Label(window, image=img, width=640, height=175)
+theLabel = Label(window, image=img, width=320, height=105)
 theLabel.pack(fill=X)
 last = Label(window, text="ADD WASTE", font=("Comic sans", 16), fg="#11dbcd", bg="#f4f3f1")
 last.pack()
@@ -42,5 +42,5 @@ ent = Entry(window)
 btn.pack(side = BOTTOM)
 ent.pack(side = BOTTOM)
 
-window.geometry('640x480')
+window.geometry('320x240')
 window.mainloop()
